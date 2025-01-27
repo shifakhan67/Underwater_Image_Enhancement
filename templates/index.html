@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Underwater Image Enhancement</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .enhancement-methods {
+            margin-bottom: 20px;
+        }
+        .enhancement-methods select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .preview-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .preview-item {
+            width: 48%;
+            text-align: center;
+        }
+        .preview-item img,
+        .preview-item video {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+        }
+        /* Fusion Image Upload Styling */
+        #photo-fusion-upload {
+            margin-bottom: 15px;
+        }
+        #photo-fusion-upload input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header -->
+        <header>
+            <h1>Underwater Image Enhancement</h1>
+        </header>
+        
+        <!-- Navigation -->
+        <nav>
+            <ul class="neon-glow">
+                <li><a href="#about-section" data-section="home">Home</a></li>
+                <li><a href="#" data-section="about">About</a></li>
+                <li><a href="#" data-section="services">Services</a></li>
+                <li><a href="#" data-section="contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <!-- Home Section with Image/Video Enhancement -->
+        <main id="home-section" class="section active-section container">
+            <h2>Select Media Type</h2>
+            <div class="media-buttons">
+                <button id="photo-button" class="button">Photo</button>
+                <button id="video-button" class="button">Video</button>
+            </div>
+
+            <!-- Hidden File Inputs -->
+            <input type="file" id="photo-upload" accept="image/*" style="display: none;">
+            <input type="file" id="video-upload" accept="video/*" style="display: none;">
+
+            <!-- Photo Enhancement Section -->
+            <div id="photo-options" style="display: none;">
+                <div class="enhancement-methods">
+                    <label for="photo-enhancement-select">Select Enhancement Method:</label>
+                    <select id="photo-enhancement-select" name="enhancement">
+                        <option value="" disabled selected>Choose an enhancement method</option>
+                        <option value="histogram_equalization">Histogram Equalization</option>
+                        <option value="rb_compensation">RB Compensation</option>
+                        <option value="white_balance">White Balance</option>
+                        <option value="sharpened">Sharpened Image</option>
+                        <option value="contrast_stretching">Contrast Stretching</option>
+                        <option value="pca_fusion">PCA Fusion</option>
+                        <option value="average_fusion">Average Fusion</option>
+                        <option value="show_all">Show All Processed Images</option>
+                    </select>
+                </div>
+
+                <!-- Fusion Image Upload (Hidden by default) -->
+                <div id="photo-fusion-upload" style="display: none;">
+                    <label>Upload Second Image for Fusion:</label>
+                    <input type="file" id="photo-fusion-image-upload" accept="image/*">
+                </div>
+
+                <button id="enhance-photo-button" class="button">Enhance Photo</button>
+
+                <!-- Photo Preview Container -->
+                <div class="preview-container" id="photo-preview-container">
+                    <div class="preview-item">
+                        <h4>Original Photo</h4>
+                        <img id="original-photo" style="max-width: 100%;">
+                    </div>
+                    <div class="preview-item">
+                        <h4>Enhanced Photo</h4>
+                        <img id="enhanced-photo" style="max-width: 100%;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Enhancement Section -->
+            <div id="video-options" style="display: none;">
+                <div class="enhancement-methods">
+                    <strong><label for="video-enhancement-select">Select Enhancement Method:</label></strong>
+                    <select id="video-enhancement-select" name="video-enhancement">
+                        <option value="" disabled selected>Choose a video enhancement method</option>
+                        <option value="brightness">Brightness Enhancement</option>
+                        <option value="contrast">Contrast Enhancement</option>
+                        <option value="color_correction">Color Correction</option>
+                        <option value="stabilization">Video Stabilization</option>
+                        <option value="noise_reduction">Noise Reduction</option>
+                    </select>
+                </div>
+
+                <button id="enhance-video-button" class="button">Enhance Video</button>
+
+                <!-- Video Preview Container -->
+                <div class="preview-container" id="video-preview-container">
+                    <div class="preview-item">
+                        <h4>Original Video</h4>
+                        <video id="original-video" controls style="max-width: 100%;">
+                            <source id="original-video-src" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="preview-item">
+                        <h4>Enhanced Video</h4>
+                        <video id="enhanced-video" controls style="max-width: 100%;">
+                            <source id="enhanced-video-src" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Processed Images Container -->
+            <div id="all-processed-images" class="all-processed-images" style="display: none;">
+                <h3>All Processed Images</h3>
+                <div class="processed-images-grid" id="processed-images-grid">
+                    <!-- Processed images will be dynamically added here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- About Section -->
+        <section id="about-section" class="section about-section" style="display: none;">
+            <div class="container">
+                <h2>About Underwater Image Enhancement</h2>
+                <div class="about-content">
+                    <p>Welcome to Underwater Image Enhancement, where we specialize in transforming underwater imagery using cutting-edge image processing techniques.</p>
+                    
+                    <div class="about-details">
+                        <h3>Our Expertise</h3>
+                        <ul>
+                            <li>Advanced Image Processing</li>
+                            <li>Noise Reduction</li>
+                            <li>Color Correction</li>
+                            <li>Underwater Photography Restoration</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-image-container">
+                        <img src="{{ url_for('static', filename='about.png') }}" alt="About Us">
+                    </div>
+
+                    <h3>Our Mission</h3>
+                    <p>Our mission is to reveal the hidden beauty of underwater environments through advanced image enhancement technologies. We strive to bring clarity, color, and detail to underwater images that were previously obscured.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services-section" class="section services-section" style="display: none;">
+            <div class="container">
+                <h2>Our Services</h2>
+                <div class="services-grid">
+                    <div class="service-item">
+                        <h3>Image Enhancement</h3>
+                        <p>Advanced techniques to improve underwater image quality</p>
+                    </div>
+                    <div class="service-item">
+                        <h3>Color Correction</h3>
+                        <p>Restore natural colors lost in underwater environments</p>
+                    </div>
+                    <div class="service-item">
+                        <h3>Noise Reduction</h3>
+                        <p>Remove unwanted noise and artifacts from underwater images</p>
+                    </div>
+                    <div class="service-item">
+                        <h3>Video Enhancement</h3>
+                        <p>Improve clarity and color of underwater video footage</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact-section" class="section contact-section" style="display: none;">
+            <div class="container">
+                <h2>Contact Us</h2>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message:</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">Send Message</button>
+                </form>
+
+                <div class="contact-info">
+                    <h3>Get in Touch</h3>
+                    <p><strong>Email:</strong> info@underwaterimage.com</p>
+                    <p><strong>Phone:</strong> (123) 456-7890</p>
+                    <p><strong>Address:</strong> 123 Ocean Blvd, Seaville</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 Underwater Image Enhancement | All Rights Reserved</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='navigation.js') }}"></script>
+</body>
+</html>
